@@ -1,0 +1,9 @@
+[build]
+  command = "npm install"   # Install dependencies
+  functions = "functions"   # Set up serverless functions
+  publish = "/"             # Root directory
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
