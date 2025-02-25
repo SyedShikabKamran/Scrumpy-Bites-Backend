@@ -10,7 +10,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Root route to check if the server is running
 app.get("/", (req, res) => {
   res.send("Welcome to the Recipe API!");
 });
@@ -18,14 +17,12 @@ app.get("/", (req, res) => {
 // MongoDB Connection
 mongoose
   .connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+    serverSelectionTimeoutMS: 5000,
   })
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
 // Routes
-
-// Get all recipes
 app.get("/api/recipes", async (req, res) => {
   try {
     const recipes = await Recipe.find();
@@ -35,7 +32,6 @@ app.get("/api/recipes", async (req, res) => {
   }
 });
 
-// Get a recipe by ID
 app.get("/api/recipes/:id", async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
@@ -49,7 +45,6 @@ app.get("/api/recipes/:id", async (req, res) => {
   }
 });
 
-// Create a new recipe
 app.post("/api/recipes", async (req, res) => {
   try {
     const newRecipe = new Recipe(req.body);
@@ -60,7 +55,6 @@ app.post("/api/recipes", async (req, res) => {
   }
 });
 
-// Delete a recipe
 app.delete("/api/recipes/:id", async (req, res) => {
   try {
     await Recipe.findByIdAndDelete(req.params.id);
@@ -70,7 +64,6 @@ app.delete("/api/recipes/:id", async (req, res) => {
   }
 });
 
-// Update recipe
 app.put("/api/recipes/:id", async (req, res) => {
   try {
     const recipe = await Recipe.findByIdAndUpdate(req.params.id, req.body, {
@@ -86,5 +79,6 @@ app.put("/api/recipes/:id", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// ❌ REMOVE app.listen(PORT)
+// ✅ Export app for Vercel
+module.exports = app;
