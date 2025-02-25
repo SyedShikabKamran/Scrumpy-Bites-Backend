@@ -1,7 +1,6 @@
 [build]
-  command = "npm install"   # Install dependencies
-  functions = "functions"   # Set up serverless functions
-  publish = "/"             # Root directory
+  command = "npm install"  # Install dependencies
+  functions = "functions"  # Serverless functions folder
 
 [[redirects]]
   from = "/api/*"
