@@ -16,8 +16,15 @@ app.get("/", (req, res) => {
 });
 
 // MongoDB Connection
-mongoose
-  .connect(process.env.MONGO_URI)
+let dbConnection;
+async function connectDB() {
+  if (!dbConnection) {
+    dbConnection = mongoose.connect(process.env.MONGO_URI);
+  }
+  return dbConnection;
+}
+
+connectDB()
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
