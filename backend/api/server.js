@@ -1,3 +1,4 @@
+require("dotenv").config({ path: "./.env" }); // Explicitly specify path
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
