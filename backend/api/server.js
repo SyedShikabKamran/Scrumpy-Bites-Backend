@@ -3,12 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const serverless = require("serverless-http"); // Required for Netlify
+const Recipe = require("../models/Recipe");
+const recipeRoutes = require("../routes/recipeRoutes");
+app.use("/api/recipes", recipeRoutes);
 
 // Load environment variables
 dotenv.config();
-
-const Recipe = require("../models/recipe");
 
 const app = express();
 app.use(express.json());
@@ -25,17 +25,25 @@ if (!process.env.MONGO_URI) {
 }
 
 // Connect to MongoDB with better error handling
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 5000,
-  })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => {
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) return;
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+    });
+    isConnected = true;
+    console.log("✅ MongoDB Connected");
+  } catch (err) {
     console.error("❌ MongoDB Connection Error:", err);
-    process.exit(1); // Exit if connection fails
-  });
+    process.exit(1);
+  }
+}
+
+connectDB();
 
 app.get("/api/recipes", async (req, res) => {
   try {
