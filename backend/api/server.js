@@ -2,21 +2,14 @@ require("dotenv").config({ path: "./.env" }); // Explicitly specify path
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const Recipe = require("../models/Recipe");
-const recipeRoutes = require("../routes/recipeRoutes");
-app.use("/api/recipes", recipeRoutes);
+const serverless = require("serverless-http"); // Required for Netlify
 
-// Load environment variables
-dotenv.config();
+const Recipe = require("./models/recipe");
+const recipeRoutes = require("./routes/recipeRoutes");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
-
-app.get("/", (req, res) => {
-  res.send("Welcome to the Recipe API!");
-});
 
 // Debugging: Check if MONGO_URI is loaded
 if (!process.env.MONGO_URI) {
@@ -25,35 +18,25 @@ if (!process.env.MONGO_URI) {
 }
 
 // Connect to MongoDB with better error handling
-let isConnected = false;
-
-async function connectDB() {
-  if (isConnected) return;
-  try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000,
-    });
-    isConnected = true;
-    console.log("✅ MongoDB Connected");
-  } catch (err) {
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+  })
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => {
     console.error("❌ MongoDB Connection Error:", err);
-    process.exit(1);
-  }
-}
+    process.exit(1); // Exit if connection fails
+  });
 
-connectDB();
-
-app.get("/api/recipes", async (req, res) => {
-  try {
-    const recipes = await Recipe.find();
-    res.json(recipes);
-  } catch (error) {
-    console.error("❌ Error fetching recipes:", error);
-    res.status(500).json({ message: "Server error" });
-  }
+app.get("/", (req, res) => {
+  res.send("Welcome to the Recipe API!");
 });
 
+// Use recipe routes
+app.use("/api/recipes", recipeRoutes);
+
 // Export for serverless function
+module.exports = app;
 module.exports.handler = serverless(app);
