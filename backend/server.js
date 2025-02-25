@@ -10,11 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Root route to check if the server is running
+app.get("/", (req, res) => {
+  res.send("Welcome to the Recipe API!");
+});
+
+// MongoDB Connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
