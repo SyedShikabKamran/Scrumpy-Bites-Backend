@@ -18,8 +18,8 @@ mongoose
   .connect(process.env.MONGO_URI, {
     serverSelectionTimeoutMS: 5000,
   })
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB Connection Error:", err));
 
 // Routes
 app.get("/api/recipes", async (req, res) => {
@@ -78,6 +78,4 @@ app.put("/api/recipes/:id", async (req, res) => {
   }
 });
 
-// ❌ REMOVE app.listen(PORT)
-// ✅ Export app for Vercel
 module.exports = app;
