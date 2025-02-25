@@ -1,12 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
-  ],
-  "env": {
-    "MONGO_URI": "mongodb+srv://SBites:scrumpybites@cluster0.wzsd1.mongodb.net/"
-  }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/server.js" }
+  ]
 }
