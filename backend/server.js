@@ -16,15 +16,10 @@ app.get("/", (req, res) => {
 });
 
 // MongoDB Connection
-let dbConnection;
-async function connectDB() {
-  if (!dbConnection) {
-    dbConnection = mongoose.connect(process.env.MONGO_URI);
-  }
-  return dbConnection;
-}
-
-connectDB()
+mongoose
+  .connect(process.env.MONGO_URI, {
+    serverSelectionTimeoutMS: 5000, // Timeout after 5 seconds
+  })
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
